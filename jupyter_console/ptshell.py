@@ -20,7 +20,7 @@ except ImportError:
 
 from zmq import ZMQError
 from IPython.core import page
-from IPython.utils.py3compat import cast_unicode_py2, input
+from IPython.utils.py3compat import input
 from ipython_genutils.tempdir import NamedFileInTemporaryDirectory
 from traitlets import (Bool, Integer, Float, Unicode, List, Dict, Enum,
                        Instance, Any)
@@ -378,7 +378,7 @@ class ZMQTerminalInteractiveShell(SingletonConfigurable):
             def prompt():
                 prompt = 'In [%d]: ' % self.execution_count
                 raw = yield from async_input(prompt)
-                return cast_unicode_py2(raw)
+                return raw
             self.prompt_for_code = prompt
             self.print_out_prompt = \
                 lambda: print('Out[%d]: ' % self.execution_count, end='')
@@ -428,7 +428,7 @@ class ZMQTerminalInteractiveShell(SingletonConfigurable):
         for _, _, cell in self.history_manager.get_tail(self.history_load_length,
                                                         include_latest=True):
             # Ignore blank lines and consecutive duplicates
-            cell = cast_unicode_py2(cell.rstrip())
+            cell = cell.rstrip()
             if cell and (cell != last_cell):
                 history.append_string(cell)
 
@@ -543,7 +543,7 @@ class ZMQTerminalInteractiveShell(SingletonConfigurable):
             # We can't set the buffer here, because it will be reset just after
             # this. Adding a callable to pre_run_callables does what we need
             # after the buffer is reset.
-            s = cast_unicode_py2(self.next_input)
+            s = self.next_input
 
             def set_doc():
                 self.pt_cli.app.buffer.document = Document(s)
